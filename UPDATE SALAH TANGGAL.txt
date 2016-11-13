@@ -1,0 +1,45 @@
+/*
+##########################################################################
+## 																		##
+##	SCRIPT PEMECAHAN KASUS SALAH TANGGAL MIEDOWER BEDUGUL DENGAN LOOP	##
+##																		##
+##########################################################################
+*/
+DECLARE @counter INT, @TheDate VARCHAR(20), @WhereSN VARCHAR(MAX), @SQLQuery VARCHAR(MAX), @jmldata int
+DECLARE @vtable  TABLE (counter int,tanggal varchar(20), wvalue varchar(50))
+
+-- INSERTING DATA PERGANTIAN DI SINI
+--## REPLACE START
+INSERT INTO @vtable (counter,tanggal,wvalue)
+SELECT '1', '05/26/2016', 'SalesNo Between 5040 AND 5076' UNION ALL
+SELECT '2', '05/27/2016', 'SalesNo Between 5077 AND 5122' UNION ALL
+SELECT '3', '05/28/2016', 'SalesNo Between 5123 AND 5181' UNION ALL
+SELECT '4', '05/29/2016', 'SalesNo Between 5182 AND 5230' UNION ALL
+SELECT '5', '05/30/2016', 'SalesNo Between 5231 AND 5269' UNION ALL
+SELECT '6', '05/31/2016', 'SalesNo Between 5270 AND 5298' UNION ALL
+SELECT '7', '06/01/2016', 'SalesNo Between 5299 AND 5343' UNION ALL
+SELECT '8', '06/02/2016', 'SalesNo Between 5344 AND 5387' UNION ALL
+SELECT '9', '06/03/2016', 'SalesNo Between 5388 AND 5460'
+--## REPLACE END
+SET @jmldata = (SELECT count(counter) FROM @vtable)
+Set @counter = 1
+WHILE(@counter <=@jmldata)
+BEGIN
+SET @TheDate = ''''+(SELECT tanggal FROM @vtable WHERE counter=@counter)+''''
+SET @WhereSN = (SELECT wvalue FROM @vtable WHERE counter=@counter)  
+SET @SQLQuery ='
+UPDATE [SalesItemsTemp] SET sdate =' + @TheDate + ' WHERE '+ @WhereSN +'
+UPDATE [SalesItemsTemp] SET BusinessDate ='+ @TheDate +' WHERE '+ @WhereSN +'
+UPDATE [SalesTblsTemp] SET Open_date ='+ @TheDate +' WHERE '+ @WhereSN +'
+UPDATE [SalesTblsTemp] SET Close_date ='+ @TheDate +' WHERE '+ @WhereSN +'
+UPDATE [SalesTblsTemp] SET BusinessDate ='+ @TheDate +' WHERE '+ @WhereSN +'
+UPDATE [RcptDtls] SET printdate ='+ @TheDate +' WHERE '+ @WhereSN +'
+UPDATE [RcptDtls] SET BusinessDate ='+ @TheDate +' WHERE '+ @WhereSN +'
+UPDATE [RcptPrintDtls] SET date ='+ @TheDate +' WHERE '+ @WhereSN
+
+-- Gunakan PRINT untuk cek, gunakan EXEC untuk Exekusi
+PRINT(@SQLQuery)
+--EXEC(@SQLQuery)
+
+SET @counter = @counter + 1
+END

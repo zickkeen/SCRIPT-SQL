@@ -1,0 +1,11 @@
+SELECT a.ItemName
+	, replace(convert(varchar,convert(Money, c.[Sell1]),1),'.00','') as [Sell1]
+	, c.[KP1]
+	, c.[MasterKPPrint]
+FROM MENU1 a
+	, MenuHdr1 b
+	, PLU c
+where (a.MenuID=b.Menuid) AND (a.PLUNumber=c.PLUNumber) 
+	AND c.[SELL1] !=0
+	AND b.MenuName LIKE '%BEER%'
+ORDER BY b.MenuID, a.PLUNumber

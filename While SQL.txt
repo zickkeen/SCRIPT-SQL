@@ -1,0 +1,32 @@
+USE pubs
+DECLARE tnames_cursor CURSOR
+FOR
+   SELECT TABLE_NAME 
+   FROM INFORMATION_SCHEMA.TABLES
+OPEN tnames_cursor
+DECLARE @tablename sysname
+--SET @tablename = 'authors'
+FETCH NEXT FROM tnames_cursor INTO @tablename
+WHILE (@@FETCH_STATUS <> -1)
+BEGIN
+   IF (@@FETCH_STATUS <> -2)
+   BEGIN   
+      SELECT @tablename = RTRIM(@tablename) 
+      EXEC ('SELECT ''' + @tablename + ''' = count(*) FROM ' 
+            + @tablename )
+      PRINT ' '
+   END
+   FETCH NEXT FROM tnames_cursor INTO @tablename
+END
+CLOSE tnames_cursor
+DEALLOCATE tnames_cursor
+
+## WHILE 
+Declare @IntFlag INT
+Set @IntFlag = 1
+WHILE(@IntFlag <=5)
+BEGIN
+	PRINT @IntFlag
+	Set @IntFlag = @IntFlag + 1
+END
+GO

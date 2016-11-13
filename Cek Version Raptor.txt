@@ -1,0 +1,6 @@
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[SwAppInfo]') AND type in (N'U'))
+BEGIN
+	SELECT * FROM [SwAppInfo]
+END ELSE BEGIN
+	SELECT * FROM [SwVersionInfo]
+END

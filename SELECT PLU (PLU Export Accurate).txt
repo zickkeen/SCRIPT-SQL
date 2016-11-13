@@ -1,0 +1,9 @@
+SELECT a.[PLUNumber] as 'Item No'
+		, a.[PLUName] as 'Item Description'
+		, b.[DepartmentName] as 'Item Category'
+		, a.[Sell1] as 'Unit Price'
+		, a.[sell2] as 'Warehouse'
+FROM PLU a
+	, DEPARTMENTS b
+where b.[DepartmentNo]=a.[Department]
+	AND [SELL1] !=0

@@ -1,0 +1,40 @@
+declare @SalesNo1 int,@SalesNo2 int
+set @SalesNo1 = 10000000
+set @SalesNo2 = 20000000
+
+delete salestblstemp
+INSERT INTO SALEStblsTEMP SELECT * FROM dbData1..SALEStblsTEMP
+--UPDATE SALEStblsTEMP SET SalesNo = (SalesNo+@SalesNo1)
+INSERT INTO SALEStblsTEMP SELECT * FROM dbData2..SALEStblsTEMP
+--UPDATE SALEStblsTEMP SET SalesNo = (SalesNo+@SalesNo2) WHERE SalesNo < @SalesNo1
+
+------------------------------------------Transaksi penjualan ------------------------------
+
+delete salesitemstemp
+INSERT INTO SALESITEMSTEMP SELECT * FROM dbData1..SALESITEMSTEMP
+INSERT INTO SALESITEMSTEMP SELECT * FROM dbData2..SALESITEMSTEMP
+delete salestblstemp
+INSERT INTO salestblstemp SELECT * FROM dbData1..SALEStblsTEMP
+INSERT INTO salestblstemp SELECT * FROM dbData2..SALEStblsTEMP
+delete RcptDtls
+INSERT INTO RcptDtls SELECT * FROM dbData1..RcptDtls
+INSERT INTO RcptDtls SELECT * FROM dbData2..RcptDtls
+delete RcptPrintDtls
+INSERT INTO RcptPrintDtls SELECT * FROM dbData1..RcptPrintDtls
+INSERT INTO RcptPrintDtls SELECT * FROM dbData2..RcptPrintDtls
+
+---- jangan ada pending tabel karena bakalan di hapus
+delete helditems
+delete heldtables
+
+---------------------------------------Nomer transaksi di bill------------------------
+delete SNoCtrl
+delete RcptNoCtrl
+delete RcptNoCtrlEnd
+delete RcptNoall
+INSERT INTO RcptNoall SELECT * FROM dbData1..RcptNoall
+INSERT INTO SNoCtrl SELECT * FROM dbData1..SNoCtrl
+INSERT INTO RcptNoCtrl SELECT * FROM dbData1..RcptNoCtrl
+INSERT INTO RcptNoCtrlEnd SELECT * FROM dbData1..RcptNoCtrlEnd
+
+update TblLayout set TBLStatus='A'

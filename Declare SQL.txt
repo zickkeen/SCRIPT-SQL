@@ -1,0 +1,16 @@
+DECLARE @theDate varchar(60)
+SET @theDate = '''2010-01-01'' AND ''2010-08-31 23:59:59'''
+
+DECLARE @SQL VARCHAR(MAX)  
+SET @SQL = 'SELECT AdministratorCode, 
+                   SUM(Total) as theTotal, 
+                   SUM(WOD.Quantity) as theQty, 
+                   AVG(Total) as avgTotal, 
+                  (SELECT SUM(tblWOD.Amount)
+                     FROM tblWOD
+                     JOIN tblWO on tblWOD.OrderID = tblWO.ID
+                    WHERE tblWO.Approved = ''1''
+                      AND tblWO.AdministratorCode = tblWO.AdministratorCode
+                      AND tblWO.OrderDate BETWEEN '+ @theDate +')'
+
+PRINT(@SQL)

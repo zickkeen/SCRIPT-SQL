@@ -1,0 +1,15 @@
+
+SELECT a.PLUNumber
+	, a.ItemName
+	, d.MenuName
+	, b.DepartmentName
+	, c.Sell1
+	, c.KP1
+FROM menu1 a, departments b, plu c, menuhdr1 d
+WHERE ((a.plunumber=c.plunumber)
+	AND (c.department=b.DepartmentNo)
+	AND (a.MenuID=d.MenuID))
+	AND (
+	--	(a.MenuID=1)
+		(d.MenuName LIKE '%BAKERY boutique%')
+	)

@@ -1,0 +1,4 @@
+declare @NoSales int, @panjang int
+SET @NoSales = (SELECT max(SalesNo) FROM SalesTblsTemp)
+SET @Panjang = (SELECT LEN(SalesNo) FROM SalesTblsTemp WHERE SalesNo = @NoSales)
+print @Panjang

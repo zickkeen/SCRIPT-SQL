@@ -1,0 +1,60 @@
+-- DIBUAT HANYA UNTUK MENU level 1 dan PLU Number tanpa Karakter
+declare @MaxDept int,@MaxGroup int, @MaxMenu int, @MaxPost int
+
+--Input PLU
+set @MaxDept = (SELECT max(department) FROM dbTrialRetail..PLU)
+delete PLU
+INSERT INTO PLU SELECT * FROM dbTRIALDTE..PLU
+UPDATE PLU SET PLUNumber = (PLUNumber + 100000000000000), Department = (DepartMent+@MaxDept)
+UPDATE PLU SET PLUNumber = '0000000DTE10396' WHERE PLUNumber = '000000032110396'
+INSERT INTO PLU SELECT * FROM dbTrialRetail..PLU
+
+--Input Group
+set @MaxGroup = (SELECT max(GroupNo) FROM dbTrialRetail..[Group])
+delete [Group]
+INSERT INTO [Group] SELECT * FROM dbTRIALDTE..[Group]
+update [GROUP] SET GroupNo = (GroupNo+@MaxGroup)
+INSERT INTO [Group] SELECT * FROM dbTrialRetail..[Group]
+
+--Input Department
+set @MaxDept = (SELECT max(DepartmentNo) FROM dbTrialRetail..Departments)
+delete Departments
+INSERT INTO Departments SELECT * FROM dbTRIALDTE..Departments
+UPDATE Departments SET DepartmentNo=(DepartmentNo+@MaxDept), GroupNo = (GroupNo+@MaxGroup)
+INSERT INTO Departments SELECT * FROM dbTrialRetail..Departments
+
+--Input Menu1
+set @MaxMenu = (SELECT max(MenuID) FROM dbTrialRetail..Menu1)
+delete Menu1
+INSERT INTO Menu1 SELECT * FROM dbTrialDTE..Menu1
+UPDATE Menu1 SET MenuID=(MenuID+@MaxMenu), PLUNumber = (PLUNumber+100000000000000)
+UPDATE Menu1 SET SMenuID=(MenuID+@MaxMenu) WHERE SMenuID!=0
+INSERT INTO Menu1 SELECT * FROM dbTrialRetail..Menu1
+
+--Input MenuHdr1
+set @MaxPost = (SELECT max(KPosition) FROM dbTrialRetail..MenuHdr1)
+delete MenuHdr1
+INSERT INTO MenuHdr1 SELECT * FROM dbTrialDTE..MenuHdr1
+UPDATE MenuHdr1 SET MenuID=(MenuID+@MaxMenu)
+UPDATE MenuHdr1 SET KPosition = (KPosition+@MaxPost) where KPosition!=0
+INSERT INTO MenuHdr1 SELECT * FROM dbTrialRetail..MenuHdr1
+
+
+-- CEK Kompabilitas menu gabungan
+Declare @JmlMenuLvl int, @JmlMenu int, @JmlItem int, @JmlKMenu int
+Declare @KapMenu int, @KapHal int
+SET @JmlMenuLvl = (SELECT Count(*) FROM MenuLevel)
+SET @JmlMenu = (SELECT MenuPagesDef FROM MenuLevel)
+SET @JmlItem = (SELECT ItemPagesDef FROM MenuLevel)
+SET @JmlKMenu = (SELECT max(KPosition) FROM Menu1)
+SET @KapHal = (SELECT min(Item_Right) FROM POSDtls)*(SELECT min(Item_Bottom) FROM POSDtls)
+SET @KapMenu = @KapHal * @JmlItem
+
+if (@KapMenu < @JmlKMenu)
+BEGIN
+	print 'Kapasitas menu terkecil anda:'
+	Print @KapMenu
+	print 'Jumlah item terbanyak'
+	print @JmlKMenu
+	print 'Cek Lebih lanjut'
+END
